@@ -4,8 +4,8 @@ import cats.effect.IO
 import com.typesafe.scalalogging.Logger
 import org.apache.spark.sql.SparkSession
 import pv.aggregation.config.{AggregationConfig, ConfigReader}
-import pv.aggregation.repository.{DatasetReader, DatasetWriter, SaveQueryResult, UpdateDataset}
-import pv.aggregation.service.{AggregationService, OutputQueryService}
+import pv.aggregation.repository.{DatasetReader, DatasetWriter, UpdateDataset}
+import pv.aggregation.service.AggregationService
 
 trait AggregationProcess
   extends AggregationService

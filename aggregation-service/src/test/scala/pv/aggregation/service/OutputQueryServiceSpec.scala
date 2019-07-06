@@ -24,9 +24,7 @@ class OutputQueryServiceSpec extends TestSparkSessionProvider with OutputQuerySe
       MaxViolationTime(9, 13, 45)
     )
 
-    val result = maxNumberOfViolationsPerTimeOfDay(input1.toDS())
-      .transform { t => t.show()
-      t}.collect()
+    val result = maxNumberOfViolationsPerTimeOfDay(input1.toDS()).collect()
 
     result should contain theSameElementsAs expected
 

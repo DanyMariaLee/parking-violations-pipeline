@@ -131,6 +131,7 @@ lazy val aggregationService = (project in file("aggregation-service"))
     )
   )
   .settings(commonSettings)
+  .settings(Test / parallelExecution := false)
   .settings(
     mainClass in assembly := Some("pv.aggregation.AggregateApp")
   ).dependsOn(common)

@@ -8,8 +8,8 @@ trait TestSparkSessionProvider extends FlatSpec with Matchers with BeforeAndAfte
 
   override def beforeEach() {
     sparkSession = SparkSession.builder().appName("udf testings")
-      .master("local")
-      .config("", "")
+      .config("spark.master", "local")
+      .config("spark.driver.allowMultipleContexts", "true")
       .getOrCreate()
   }
 

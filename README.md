@@ -4,17 +4,25 @@
 
 Parking violations pipeline is a streaming data analytics service that performs aggregations in real-time and saves aggregated data usild `spark streaming`.
 
-### Data modeling
+#### In this README you will find
+- Data modeling and star schema
+- Application architecture
+- Configuration details
+- build.sbt and setup
+- After setup
+- Example of query output
+
+## Data modeling
 To understand data better we split the input into separate tables using several aggregations to produce metrics: `who, when, where, how much` and so on.
 #### Facts
 As an input we use data from [Kaggle](https://www.kaggle.com/new-york-city/nyc-parking-tickets#Parking_Violations_Issued_-_Fiscal_Year_2015.csv) containing registered parking violations with all sorts of information we can use.
 
-#### Star Schema
+## Star Schema
 Here is how the output tables look like
 
 [![N|Solid](./docs/star.png)](https://nodesource.com/products/nsolid)
 
-##### Application architecture
+## Application architecture
 [![N|Solid](./docs/pipeline.png)](https://nodesource.com/products/nsolid)
 
 `DataProvider` is responsible for:
@@ -54,10 +62,10 @@ Balancer is responsible for sending requests to `N` different ports, where `N`is
 8) Most common registration state among all violations (Top-k)
 9) Locations with most violations (Top-K)
 
-and saves all query results for questions in `/query_result/` folder in `parquet`.
+and show all query results for questions in console output.
 
 
-##### Configuration details
+## Configuration details
 This application is configured to work locally or on google cloud service, all `jars` and `input csv files` from Kagle should be located in the bucket on the cloud. All paths in every `application.conf` should include the bucket and FileSystem identifier according to the FileSystem used in the app.
 
 ##### What is installed
@@ -83,7 +91,7 @@ val hdConf = streamingContext.sparkContext.hadoopConfiguration
 
 `Important` For local run we have to provide all the paths in `application.conf` that include the identifier suitable for FS used and uncomment the `hdConf` setting in the code.
 
-#### build.sbt and all the apps
+## build.sbt and all the apps
 
 Application contains four independent services and one common library, containing all models and logic that is used in services:
 ```scala
@@ -119,6 +127,7 @@ files = [
   "Parking_Violations_Issued_-_Fiscal_Year_2015.csv"
 ]
 ```
+Since GitHub does't allow us to upload the input file: `Yowza, that’s a big file. Try again with a file smaller than 25MB.`, we have to add it to `resources` along with `application.conf`.
 
 If you run locally without balancer the address should be the same as in `HttpService` configuration, or if you have a balancer - address of that balancer.
 `files` is a List of files to be sent via http, the project has it's input file in resources for local run:
@@ -197,7 +206,7 @@ top-k-results = 5
 `base-path` and table names should be the same as in the `dataProcessor` configuration.
 `top-k-results` is a configurable parameter for our queries (Most common reasons of all violation (Top-k))
 
-#### After setup
+## After setup
 Now we have all configurations and ready to run. If you want to run right from intellij you need to open running config for the app and click on `Include dependencies with "Provided" scope` for each running object
 [![N|Solid](./docs/include_provided.png)](https://nodesource.com/products/nsolid)
 
@@ -219,10 +228,11 @@ Scheduling time is set in cron format:
 ```scala
 CronScheduleBuilder.cronSchedule("0 0/1 * 1/1 * ? *")
 ```
-Here it's every minute.
+Here it's every 10 minutes.
 
-#### Example of query output (an example)
-To answer the questions we can either write selects in `spark-shell` or run `OutputQueryApp`. The output of this service run will save data in `/query_result/` under `base-path`.
+## Example of query output
+To answer the questions we can either write selects in `spark-shell` or run `OutputQueryApp`. The output of this service run will print data in terminal window. For big tables it will be default 20 rows limit as usual.
+This is an example of how data looks like.
 
 Number of violation per month in 2015?
 ```sh

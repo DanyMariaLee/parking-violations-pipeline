@@ -12,12 +12,4 @@ object IOSeqExecution {
         IO.raiseError(e)
       }.unsafeRunSync()
     }
-
-  def executeAll(seqIO: Seq[IO[Unit]])(implicit logger: Logger) =
-    seqIO.foreach {
-      _.handleErrorWith { e =>
-        logger.error(e.getMessage)
-        IO.raiseError(e)
-      }.unsafeRunSync()
-    }
 }

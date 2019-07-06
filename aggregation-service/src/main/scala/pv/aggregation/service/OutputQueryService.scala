@@ -20,7 +20,8 @@ trait OutputQueryService {
 
     val monthNumberCol = "month_number"
 
-    ds.filter(_.year == 2015) // 12 rows max
+    ds
+      .filter(_.year == 2015) // 12 rows max
       .flatMap { summary =>
       Months.findNumber(summary.month)
         .map(monthNumber =>
