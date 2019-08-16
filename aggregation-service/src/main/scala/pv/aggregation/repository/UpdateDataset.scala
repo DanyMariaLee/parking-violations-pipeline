@@ -22,7 +22,7 @@ trait UpdateDataset extends DatasetReader with DatasetWriter {
         val agg = aggregateFunction(oldDs)
         logger.debug(s"updating $readFrom => $writeTo")
         overwrite(agg, writeTo)
-      case _ => IO.pure(Unit)
+      case _ => IO.pure(())
     }
   }
 }

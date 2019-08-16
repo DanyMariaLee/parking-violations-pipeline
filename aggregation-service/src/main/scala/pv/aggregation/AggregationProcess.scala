@@ -18,8 +18,8 @@ trait AggregationProcess
   val config = readConfig.unsafeRunSync()
 
   val conf = new SparkConf()
-    .setAppName("data-processing")
-    .setMaster("local[3]")
+    .setAppName("aggregation-service")
+    .setMaster("local")
    // .set("fs.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem")
    // .set("fs.AbstractFileSystem.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS")
 

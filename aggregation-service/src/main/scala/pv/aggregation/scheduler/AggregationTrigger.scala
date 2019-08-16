@@ -9,7 +9,7 @@ trait AggregationTrigger {
   val trigger = newTrigger()
     .withIdentity("aggregationTrigger", "sparkJobsGroup")
     .withSchedule(
-      CronScheduleBuilder.cronSchedule("0 0/4 * 1/1 * ? *"))
+      CronScheduleBuilder.cronSchedule("0 0/2 * 1/1 * ? *"))
     .build()
 
   val sparkJob = JobBuilder.newJob(classOf[ScheduledAggregation])
