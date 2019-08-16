@@ -1,23 +1,40 @@
 package pv.data.processing
 
-import akka.actor.ActorSystem
+import cats.effect.IO
+import com.typesafe.scalalogging.Logger
+import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.streaming.{Seconds, StreamingContext}
+import pv.data.processing.analytics.AnalyticsService
 
-object DataProcessingApp extends App with StreamingService {
+object DataProcessingApp
+  extends App
+    with StreamingService
+    with AnalyticsService {
 
-  implicit val sparkSession = SparkSession.builder()
-    .config("spark.master", "local")
-    .config("spark.driver.allowMultipleContexts", "true")
+  implicit val logger = Logger("data-processing-service")
+
+  val conf = new SparkConf()
+    .setAppName("data-processing")
+    .setMaster("local[3]")
+   // .set("fs.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem")
+   // .set("fs.AbstractFileSystem.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS")
+
+  implicit def sparkSession = SparkSession
+    .builder()
+    .config(conf)
     .getOrCreate()
 
- // val hdConf = streamingContext.sparkContext.hadoopConfiguration
- // hdConf.set("fs.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem")
- // hdConf.set("fs.AbstractFileSystem.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS")
+  def createStreamingContext(): StreamingContext = {
+    val ssc = new StreamingContext(conf, Seconds(2))
+    ssc.checkpoint(config.basePath + "/checkpoint/")
+    ssc
+  }
 
-  implicit val actorSystem = ActorSystem("data-processing-service")
-
-  sparkSession.sparkContext.setLogLevel("ERROR")
-  streamingContext.sparkContext.setLogLevel("ERROR")
+  val streamingCtx = StreamingContext.getOrCreate(
+    config.basePath + "/checkpoint/",
+    createStreamingContext
+  )
 
   Seq(
     processStream(config, precinctSquadSummary, config.precinctSquadTable),
@@ -29,13 +46,16 @@ object DataProcessingApp extends App with StreamingService {
     processStream(config, annualLocationSummary, config.yearLocationTable),
     processStream(config, locationReasonSummary, config.locationReasonTable)
   ).par
-    .foreach(
-      _.unsafeRunSync()
-    )
+    .foreach {
+    _.handleErrorWith { e =>
+      logger.error(e.getMessage)
+      IO.raiseError(e)
+    }.unsafeRunSync()
+  }
 
-  streamingContext.start()
-  streamingContext.awaitTermination()
-  streamingContext.stop(
+  streamingCtx.start()
+  streamingCtx.awaitTermination()
+  streamingCtx.stop(
     stopSparkContext = false,
     stopGracefully = false
   )

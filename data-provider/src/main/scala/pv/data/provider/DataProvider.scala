@@ -2,13 +2,13 @@ package pv.data.provider
 
 import cats.effect.IO
 import com.typesafe.scalalogging.Logger
-import okhttp3.OkHttpClient
+import org.apache.http.impl.client.HttpClientBuilder
 
 object DataProvider extends App with DataProviderProcess {
 
   val logger = Logger("data-provider")
 
-  implicit val client = new OkHttpClient
+  implicit val client = HttpClientBuilder.create().build()
 
   process.handleErrorWith {
     case e if e.getMessage.contains("Failed to connect to") =>

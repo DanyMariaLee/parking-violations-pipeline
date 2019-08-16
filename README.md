@@ -91,6 +91,27 @@ val hdConf = streamingContext.sparkContext.hadoopConfiguration
 
 `Important` For local run we have to provide all the paths in `application.conf` that include the identifier suitable for FS used and uncomment the `hdConf` setting in the code.
 
+#### Nginx configuration
+```jshelllanguage
+ upstream localhost {
+      server localhost:9001;
+      server localhost:9002;
+    }
+
+    server {
+        listen       8080;
+        server_name  localhost;
+
+        # To allow POST on static pages
+        #error_page  405     =200 /;
+        error_page 405 =200 @405;
+
+        location @405 {
+        root /htdocs;
+        proxy_pass http://localhost;
+        }
+```
+
 ## build.sbt and all the apps
 
 Application contains four independent services and one common library, containing all models and logic that is used in services:
@@ -207,7 +228,7 @@ top-k-results = 5
 `top-k-results` is a configurable parameter for our queries (Most common reasons of all violation (Top-k))
 
 ## After setup
-Now we have all configurations and ready to run. If you want to run right from intellij you need to open running config for the app and click on `Include dependencies with "Provided" scope` for each running object
+Now we have all configurations and ready to run. If you want to run right from intellij you need to open running pv.view.config for the app and click on `Include dependencies with "Provided" scope` for each running object
 [![N|Solid](./docs/include_provided.png)](https://nodesource.com/products/nsolid)
 
 Now we can run: 

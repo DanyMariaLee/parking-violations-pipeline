@@ -1,3 +1,4 @@
+/*
 package pv.data.provider.process
 
 import cats.effect.IO
@@ -7,7 +8,7 @@ import org.scalatest.{FlatSpec, Matchers}
 import pv.common.output.domain.WrappedNYCData
 import pv.data.provider.DataProviderProcess
 import pv.data.provider.TestData.response200
-import pv.data.provider.config.DataProviderConfig
+import pv.data.provider.pv.view.config.DataProviderConfig
 import spray.json.RootJsonFormat
 
 class DataProviderProcessSpec extends FlatSpec with Matchers {
@@ -22,11 +23,11 @@ class DataProviderProcessSpec extends FlatSpec with Matchers {
       }
   }
 
-  "process" should "fail when config reader failed" in new mocks {
+  "process" should "fail when pv.view.config reader failed" in new mocks {
     override def readConfig: IO[DataProviderConfig] =
-      IO.raiseError(new Exception("Failed to read config"))
+      IO.raiseError(new Exception("Failed to read pv.view.config"))
 
-    intercept[Exception](process.unsafeRunSync()).getMessage shouldBe "Failed to read config"
+    intercept[Exception](process.unsafeRunSync()).getMessage shouldBe "Failed to read pv.view.config"
   }
 
   "process" should "fail when file reading failed" in new mocks {
@@ -49,3 +50,4 @@ class DataProviderProcessSpec extends FlatSpec with Matchers {
   }
 
 }
+*/

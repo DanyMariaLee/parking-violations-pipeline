@@ -11,7 +11,8 @@ trait DatasetReader {
     Try(ss.read.parquet(path).as[T]) match {
       case Success(ds) => IO.pure(Option(ds))
       case Failure(e: AnalysisException)
-        if e.getMessage.contains("Path does not exist") => IO.pure(None)
+        if e.getMessage.contains("Path does not exist") ||
+          e.getMessage.contains("Unable to infer schema for Parquet") => IO.pure(None)
       case Failure(e) => IO.raiseError(e)
     }
   }

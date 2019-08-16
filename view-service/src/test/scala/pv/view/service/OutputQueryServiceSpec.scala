@@ -1,10 +1,10 @@
-package pv.aggregation.service
+package pv.view.service
 
 import pv.aggregation.TestSparkSessionProvider
 import pv.common.output.query.MaxViolationTime
 import pv.common.output.table.{AnnualMonthSummary, ViolationTimeSummary}
 
-class OutputQueryServiceSpec extends TestSparkSessionProvider with OutputQueryService {
+class OutputQueryServiceSpec extends TestSparkSessionProvider with QueryService {
 
   behavior of "OutputQuery"
 
@@ -65,3 +65,4 @@ class OutputQueryServiceSpec extends TestSparkSessionProvider with OutputQuerySe
   }
 
 }
+

@@ -8,15 +8,15 @@ import pv.data.processing.schema.SchemaProvider
 
 trait DatastreamReader extends SchemaProvider {
 
-  def readStream(config: DataProcessingConfig)(implicit ss: SparkSession): Dataset[WrappedNYCData] = {
+  def readStream(config: DataProcessingConfig, table: String)(implicit ss: SparkSession): Dataset[WrappedNYCData] = {
     import ss.implicits._
 
     ss
       .readStream
-      .format("kafka")
+      .format("org.apache.spark.sql.kafka010.KafkaSourceProvider")
       .option("kafka.bootstrap.servers", config.bootstrapServers)
       .option("subscribe", config.topic)
-      .option("group.id", config.groupId)
+      .option("group.id", config.groupId + table)
       .option("startingOffsets", "earliest")
       .load()
       .select(from_json($"value".cast("string"), schema).alias("value"))

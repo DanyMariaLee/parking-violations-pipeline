@@ -1,7 +1,7 @@
 package pv.data.processing.repository
 
 import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.streaming.{OutputMode, StreamingQuery}
+import org.apache.spark.sql.streaming.{OutputMode, ProcessingTime, StreamingQuery, Trigger}
 
 trait DatastreamWriter {
 
@@ -15,6 +15,7 @@ trait DatastreamWriter {
       .queryName(table)
       .option("spark.sql.streaming.schemaInference", "true")
       .option("checkpointLocation", s"$basePath$table/check-point/")
+      .trigger(Trigger.ProcessingTime(10))
       .start(basePath + table)
   }
 }

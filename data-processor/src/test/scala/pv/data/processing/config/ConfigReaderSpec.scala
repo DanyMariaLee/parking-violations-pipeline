@@ -9,7 +9,7 @@ class ConfigReaderSpec extends FlatSpec with Matchers with ConfigReader {
   "readConfig" should "parse configuration correctly" in {
 
     readConfig.handleErrorWith{ case e =>
-      fail(s"Failed to parse config: ${e.getMessage}")
+      fail(s"Failed to parse pv.view.config: ${e.getMessage}")
     }
   }
 

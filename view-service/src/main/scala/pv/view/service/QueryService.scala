@@ -1,4 +1,4 @@
-package pv.aggregation.service
+package pv.view.service
 
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{Dataset, SparkSession}
@@ -7,11 +7,11 @@ import pv.common.output.query.{LocationViolation, MaxViolationTime, StateSummary
 import pv.common.output.table._
 
 /**
-  * The goal of this service is to answer the questions in the task,
-  * it's for demo purposes only as in real life
-  * we can select such things using spark shell for example.
-  **/
-trait OutputQueryService {
+ * The goal of this service is to answer the questions in the task,
+ * it's for demo purposes only as in real life
+ * we can select such things using spark shell for example.
+ **/
+trait QueryService {
 
   /** Number of violation per month in 2015? */
   def numberOfViolationPerMonthIn2015(ds: Dataset[AnnualMonthSummary]
@@ -23,12 +23,12 @@ trait OutputQueryService {
     ds
       .filter(_.year == 2015) // 12 rows max
       .flatMap { summary =>
-      Months.findNumber(summary.month)
-        .map(monthNumber =>
-          AnnualMonthSummaryWithMonth(
-            monthNumber, summary.year, summary.month, summary.count)
-        )
-    }
+        Months.findNumber(summary.month)
+          .map(monthNumber =>
+            AnnualMonthSummaryWithMonth(
+              monthNumber, summary.year, summary.month, summary.count)
+          )
+      }
       .sort(monthNumberCol)
       .drop(monthNumberCol)
       .as[AnnualMonthSummary]

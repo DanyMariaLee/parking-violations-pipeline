@@ -27,5 +27,7 @@ project/project/target
 # WorkSheet files
 *.sc
 
+*.csv
+
 # mac
 .DS_Store
