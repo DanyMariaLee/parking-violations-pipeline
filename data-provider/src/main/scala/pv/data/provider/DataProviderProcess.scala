@@ -1,7 +1,7 @@
 package pv.data.provider
 
 import cats.effect.IO
-import org.apache.http.impl.client.CloseableHttpClient
+import okhttp3.OkHttpClient
 import pv.common.json.JsonProtocols
 import pv.common.parser.CSVParser
 import pv.data.provider.config.ConfigReader
@@ -13,7 +13,7 @@ trait DataProviderProcess
     with ConfigReader
     with JsonProtocols {
 
-  implicit def client: CloseableHttpClient
+  implicit def client: OkHttpClient
 
   def process: IO[Unit] =
     readConfig

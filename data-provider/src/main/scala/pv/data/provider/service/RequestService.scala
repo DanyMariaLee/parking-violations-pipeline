@@ -2,9 +2,7 @@ package pv.data.provider.service
 
 import cats.effect.IO
 import com.typesafe.scalalogging.Logger
-import org.apache.http.client.methods.{CloseableHttpResponse, HttpPost}
-import org.apache.http.entity.StringEntity
-import org.apache.http.impl.client.CloseableHttpClient
+import okhttp3._
 import pv.common.output.domain.WrappedNYCData
 import spray.json.RootJsonFormat
 
@@ -15,13 +13,13 @@ trait RequestService {
   def send(host: String, port: Int, data: WrappedNYCData
           )(implicit
             rj: RootJsonFormat[WrappedNYCData],
-            client: CloseableHttpClient): CloseableHttpResponse = {
+            client: OkHttpClient): Response = {
 
     val request = buildRequest(host, port, data)
 
     makeCall(client, request)
       .map { response =>
-        logger.info(s"Response: $response")
+        logger.info(s"Response code: ${response.code()}")
         response
       }
       .handleErrorWith { e =>
@@ -31,18 +29,19 @@ trait RequestService {
   }
 
   private[service] def buildRequest(host: String, port: Int, data: WrappedNYCData
-                                   )(implicit rj: RootJsonFormat[WrappedNYCData]): HttpPost = {
+                                   )(implicit rj: RootJsonFormat[WrappedNYCData]): Request = {
 
-    val post = new HttpPost(s"http://$host:$port/")
-    post.setHeader("Content-type", "application/json")
+    val mediaType = MediaType.get("application/json; charset=utf-8")
 
     val jsonString = rj.write(data).toString()
+    val body = RequestBody.create(mediaType, jsonString)
 
-    post.setEntity(new StringEntity(jsonString))
-    post
+    new Request.Builder()
+      .url(s"http://$host:$port/")
+      .post(body)
+      .build()
   }
 
-  private[service] def makeCall(client: CloseableHttpClient,
-                                request: HttpPost): IO[CloseableHttpResponse] =
-    IO(client.execute(request))
+  private[service] def makeCall(client: OkHttpClient, request: Request): IO[Response] =
+    IO(client.newCall(request).execute())
 }

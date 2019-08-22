@@ -1,4 +1,3 @@
-/*
 package pv.data.provider.process
 
 import cats.effect.IO
@@ -8,7 +7,7 @@ import org.scalatest.{FlatSpec, Matchers}
 import pv.common.output.domain.WrappedNYCData
 import pv.data.provider.DataProviderProcess
 import pv.data.provider.TestData.response200
-import pv.data.provider.pv.view.config.DataProviderConfig
+import pv.data.provider.config.DataProviderConfig
 import spray.json.RootJsonFormat
 
 class DataProviderProcessSpec extends FlatSpec with Matchers {
@@ -50,4 +49,3 @@ class DataProviderProcessSpec extends FlatSpec with Matchers {
   }
 
 }
-*/

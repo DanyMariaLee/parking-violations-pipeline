@@ -1,4 +1,3 @@
-/*
 package pv.data.provider.service
 
 import cats.effect.IO
@@ -44,4 +43,3 @@ class RequestServiceSpec extends FlatSpec with Matchers {
   }
 
 }
-*/

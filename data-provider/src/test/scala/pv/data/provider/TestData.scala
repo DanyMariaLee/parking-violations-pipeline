@@ -1,7 +1,6 @@
-/*
 package pv.data.provider
 
-import pv.common.output._
+import okhttp3.{MediaType, Protocol, Request, RequestBody, Response}
 import pv.common.output.domain._
 
 object TestData {
@@ -23,4 +22,3 @@ object TestData {
     .message("")
     .code(200).build()
 }
-*/

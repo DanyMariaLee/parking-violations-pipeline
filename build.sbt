@@ -12,19 +12,18 @@ val catVersion = "1.3.1"
 val hadoopGCConnectorVersion = "hadoop2-1.9.17"
 val kafkaVersion = "2.3.0"
 val logbackVersion = "1.2.3"
+val okHttpVersion = "3.14.2"
 val pureConfigVersion = "0.11.1"
 val quartzVersion = "2.3.0"
 val scalaLoggingVersion = "3.9.2"
 val scalaTestVersion = "3.0.5"
 val sparkVersion = "2.4.3"
-val swaggerVersion = "2.0.3"
 
 // Libs
 val akkaHttp = "com.typesafe.akka" %% "akka-http" % akkaVersion
 val akkaMarshalling = "com.typesafe.akka" %% "akka-http-spray-json" % akkaVersion
 val alpakka = "com.typesafe.akka" %% "akka-stream-kafka" % alpakkaVersion
 val akkaStream = "com.typesafe.akka" %% "akka-stream" % akkaStreamVersion
-val apacheHttp = "org.apache.httpcomponents" % "httpclient" % "4.5.9"
 
 val catsEffect = "org.typelevel" %% "cats-effect" % catVersion
 val catsCore = "org.typelevel" %% "cats-core" % catVersion
@@ -32,6 +31,7 @@ val hadoopGCConnector = "com.google.cloud.bigdataoss" % "gcs-connector" % hadoop
 val kafka = "org.apache.kafka" %% "kafka" % kafkaVersion
 
 val logback = "ch.qos.logback" % "logback-classic" % logbackVersion % Runtime
+val okHttp = "com.squareup.okhttp3" % "okhttp" % okHttpVersion
 val pureConfig = "com.github.pureconfig" %% "pureconfig" % pureConfigVersion
 val quartz = "org.quartz-scheduler" % "quartz" % quartzVersion
 val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion
@@ -41,9 +41,7 @@ val scalaReflect = "org.scala-lang" % "scala-reflect" % scala211
 val sparkSql = "org.apache.spark" %% "spark-sql" % sparkVersion
 val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion % "provided"
 val sparkStreamingKafka = "org.apache.spark" %% "spark-streaming-kafka-0-10" % sparkVersion
-val sparkSqlKafka = "org.apache.spark" %% "spark-sql-kafka-0-10" % sparkVersion// % "provided"
-
-val swagger = "com.github.swagger-akka-http" %% "swagger-akka-http" % swaggerVersion
+val sparkSqlKafka = "org.apache.spark" %% "spark-sql-kafka-0-10" % sparkVersion % "provided"
 
 // exclude
 val excludeFromLog4j = "log4j" % "log4j" % "1.2.15" excludeAll(
@@ -70,8 +68,9 @@ lazy val dataProvider = (project in file("data-provider"))
       catsCore,
       catsEffect,
       excludeFromLog4j,
+      hadoopGCConnector,
       logback,
-      apacheHttp,
+      okHttp,
       pureConfig,
       scalaLogging,
       scalaTest
@@ -161,8 +160,7 @@ lazy val aggregationService = (project in file("aggregation-service"))
         scalaLogging,
         scalaTest,
         scalaReflect,
-        sparkSql,
-        swagger
+        sparkSql
       )
     )
     .settings(
